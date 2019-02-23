@@ -32,10 +32,12 @@ exports.handler = function(event, _context, callback) {
     }
 
     var contentType;
+    var metadata;
     S3.getObject({Bucket: BUCKET, Key: dir + filename})
         .promise()
         .then(data => {
             contentType = data.ContentType;
+            metadata = data.Metadata;
             var width = sizes[0] === 'AUTO' ? null : parseInt(sizes[0]);
             var height = sizes[1] === 'AUTO' ? null : parseInt(sizes[1]);
             var fit;
@@ -64,7 +66,8 @@ exports.handler = function(event, _context, callback) {
                 Body: result,
                 Bucket: BUCKET,
                 ContentType: contentType,
-                Key: path
+                Key: path,
+                Metadata: metadata
             }).promise()
         )
         .then(() =>
